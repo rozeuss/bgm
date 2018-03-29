@@ -1,0 +1,10 @@
+[[X, 0, 1, 1], [1, X, 0, 1], [0, 1, X, 0], [0, 0, 1, X]]
+true
+First condition: 2
+structure.Edge@52cc8049
+Second condition: 1
+structure.Edge@6e8cf4c6
+structure.Edge@12edcd21
+structure.Edge@7cc355be
+structure.Edge@5b6f7412
+structure.Edge@34c45dca
