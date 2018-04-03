@@ -32,10 +32,9 @@ public class Predecessor {
     }
 
     private String listToString(List<Node> nodePredecessors) {
-        String result = "";
-        for (int i = 0; i < nodePredecessors.size(); i++) {
-
-            result += " " + nodePredecessors.get(i).getName();
+        StringBuilder result = new StringBuilder();
+        for (Node nodePredecessor : nodePredecessors) {
+            result.append(" ").append(nodePredecessor.getName());
         }
         return result + " ";
     }

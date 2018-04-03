@@ -1,16 +1,20 @@
 Matrix: [[X, 0, 1, 1], [1, X, 0, 1], [0, 1, X, 0], [0, 0, 1, X]]
 Input validation: true
-First condition: m<=2
+
+WARUNEK KONIECZNY
+m<=2
 Struktura jest co najwyzej 2-diagnozowalna
+Liczba elementów opiniuj¹cych element powinna byæ co najmniej równa 2
 {1=2, 2=2, 3=1, 4=1}
-Struktura jest 1-diagnozowalna
-Second condition: false
-EDGE PREDECESSOR TABLE
+Struktura jest co najwy¿ej 1-diagnozowalna
+CZY SPELNIONY? false (MOZE TRZEBA SPRAWDZIC CZY M > 0)
+
+WARUNEK WYSTARCZAJACY
 Edge{start=3, end=2}=Predecessor{startNodePredecessors={[1, 4]}	 endNodePredecessors={[3]}}
 Edge{start=1, end=4}=Predecessor{startNodePredecessors={[2]}	 endNodePredecessors={[1, 2]}}
 Edge{start=2, end=1}=Predecessor{startNodePredecessors={[3]}	 endNodePredecessors={[2]}}
 Edge{start=1, end=3}=Predecessor{startNodePredecessors={[2]}	 endNodePredecessors={[1, 4]}}
 Edge{start=4, end=3}=Predecessor{startNodePredecessors={[1, 2]}	 endNodePredecessors={[1, 4]}}
 Edge{start=2, end=4}=Predecessor{startNodePredecessors={[3]}	 endNodePredecessors={[1, 2]}}
-Sufficient condition: true
-Struktura jest zatem 1-diagnozowalna
+CZY SPELNIONY? true
+BGM: Struktura jest 1-diagnozowalna

@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    public static final String INPUT = "\\input.txt";
+    public static final String INPUT = "\\input.txt"; //macierz przejsc
     public static final String OUTPUT = "\\output.txt";
     public static final String PATH = System.getProperty("user.dir");
     public static List<String> inputData = null;

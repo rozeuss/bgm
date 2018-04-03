@@ -23,17 +23,24 @@ public class BGM {
 
     public void diagnose() {
         createGraph();
-        checkNecessaryCondition();
-        boolean b = checkSufficientCondition();
-        System.out.println("Sufficient condition: " + b);
-        System.out.println("Struktura jest zatem " +  min +"-diagnozowalna");
+        System.out.println("\nWARUNEK KONIECZNY");
+        boolean necessaryCondition = checkNecessaryCondition();
+        System.out.println("CZY SPELNIONY? " + necessaryCondition + " (MOZE TRZEBA SPRAWDZIC CZY M > 0)\n");
+
+        System.out.println("WARUNEK WYSTARCZAJACY");
+        boolean sufficientCondition = checkSufficientCondition();
+        System.out.println("CZY SPELNIONY? " + sufficientCondition);
+        if (sufficientCondition) {
+            System.out.println("BGM: Struktura jest " + min + "-diagnozowalna");
+        } else {
+            System.out.println("BGM: Struktura nie jest " + m + "-diagnozowalna");
+        }
     }
 
-    private void checkNecessaryCondition() {
-        long first = nDiagnosable();
-        System.out.println("First condition: m<=" + first);
+    private boolean checkNecessaryCondition() {
+        System.out.println("m<=" + nDiagnosable());
         System.out.println("Struktura jest co najwyzej " + m + "-diagnozowalna");
-        System.out.println("Second condition: " + checkSecondCondition());
+        return checkSecondCondition();
     }
 
     private long nDiagnosable() {
@@ -44,14 +51,15 @@ public class BGM {
     private boolean checkSecondCondition() {
         Map<Integer, Integer> nodeTestingElements = countTestingElements();
         min = Collections.min(nodeTestingElements.values());
+        System.out.println("Liczba elementów opiniujących element powinna być co najmniej równa " + m);
         System.out.println(nodeTestingElements);
-        System.out.println("Struktura jest " + Collections.min(nodeTestingElements.values()) + "-diagnozowalna");
-        return nodeTestingElements.values().stream().allMatch(integer -> integer >= this.m);
+        System.out.println("Struktura jest co najwyżej " + Collections.min(nodeTestingElements.values()) + "-diagnozowalna");
+        return nodeTestingElements.values().stream().allMatch(integer -> integer >= m);
 //        return Collections.min(nodeTestingElements.values());
     }
 
 
-    private boolean checkSufficientCondition() { //trzeci warunek
+    private boolean checkSufficientCondition() {
         Map<Edge, Predecessor> edgePredecessorMap = countSubsets();
         Collection<Predecessor> values = edgePredecessorMap.values();
         for (Predecessor value : values) {
@@ -81,7 +89,6 @@ public class BGM {
             }
             edgePredecessorMap.put(uniqueEdge, predecessor);
         }
-        System.out.println("EDGE PREDECESSOR TABLE");
         edgePredecessorMap.entrySet().forEach(System.out::println);
         return edgePredecessorMap;
     }
