@@ -1,4 +1,6 @@
 import bgm.BGM;
+import utils.MatrixUtils;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -6,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import utils.MatrixUtils;
 
 public class Main {
 
@@ -23,12 +24,12 @@ public class Main {
         }
 
         String[][] matrix = MatrixUtils.createMatrix(inputData);
-        System.out.println(Arrays.deepToString(matrix));
-        System.out.println(MatrixUtils.validateInput(matrix));
+        System.out.println("Matrix: " + Arrays.deepToString(matrix));
+        System.out.println("Input validation: " + MatrixUtils.validateInput(matrix));
 
         if (MatrixUtils.validateInput(matrix)) {
-            BGM bgm = new BGM(matrix.length);
-            bgm.diagnose(matrix);
+            BGM bgm = new BGM(matrix);
+            bgm.diagnose();
         } else {
             throw new IllegalArgumentException("Invalid input data.\nAllowed symbols: 0, 1, x, X");
         }

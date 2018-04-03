@@ -25,4 +25,11 @@ public class Edge {
         this.end = end;
     }
 
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "start=" + start.getName() +
+                ", end=" + end.getName() +
+                '}';
+    }
 }

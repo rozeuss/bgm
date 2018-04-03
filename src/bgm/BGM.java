@@ -1,62 +1,116 @@
 package bgm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import structure.Edge;
 import structure.Graph;
 import structure.Node;
+import structure.Predecessor;
+
+import java.util.*;
 
 public class BGM {
 
     private long cardinalityOfE; //liczebność zbioru
-    private long inDegreeNode; //stopień wejściowy
     private String[][] structure;
-    private Node e; //wezeł
-    private Graph graph = new Graph();
+    private Graph graph;
+    private long m;
+    private long min;
+    private Set<Edge> edges;
 
-    public BGM(long cardinalityOfE) {
-        this.cardinalityOfE = cardinalityOfE;
+    public BGM(String[][] structure) {
+        this.cardinalityOfE = structure.length;
+        this.structure = structure;
     }
 
-    public void diagnose(String[][] matrix) {
-        this.structure = matrix;
-        checkNecessaryCondition();
+    public void diagnose() {
         createGraph();
-        checkSufficientCondition();
+        checkNecessaryCondition();
+        boolean b = checkSufficientCondition();
+        System.out.println("Sufficient condition: " + b);
+        System.out.println("Struktura jest zatem " +  min +"-diagnozowalna");
     }
 
     private void checkNecessaryCondition() {
-        long first = checkFirstCondition();
-        System.err.println("First condition: " + first);
-        long second = checkSecondCondition();
-        System.err.println("Second condition: " + second);
-
+        long first = nDiagnosable();
+        System.out.println("First condition: m<=" + first);
+        System.out.println("Struktura jest co najwyzej " + m + "-diagnozowalna");
+        System.out.println("Second condition: " + checkSecondCondition());
     }
 
-    private long checkFirstCondition() {
-        long m;
+    private long nDiagnosable() {
         m = cardinalityOfE - 2;
-        return m;
+        return cardinalityOfE - 2;
     }
 
-    private long checkSecondCondition() {
+    private boolean checkSecondCondition() {
         Map<Integer, Integer> nodeTestingElements = countTestingElements();
-        return Collections.min(nodeTestingElements.values());
+        min = Collections.min(nodeTestingElements.values());
+        System.out.println(nodeTestingElements);
+        System.out.println("Struktura jest " + Collections.min(nodeTestingElements.values()) + "-diagnozowalna");
+        return nodeTestingElements.values().stream().allMatch(integer -> integer >= this.m);
+//        return Collections.min(nodeTestingElements.values());
     }
 
-    private void checkSufficientCondition() {
-        List<Node> startNodePredecessors = new ArrayList<>();
-        List<Node> endNodePredecessors = new ArrayList<>();
 
+    private boolean checkSufficientCondition() { //trzeci warunek
+        Map<Edge, Predecessor> edgePredecessorMap = countSubsets();
+        Collection<Predecessor> values = edgePredecessorMap.values();
+        for (Predecessor value : values) {
+            List<Integer> startNodePredecessors = value.getStartNodePredecessors();
+            List<Integer> endNodePredecessors = value.getEndNodePredecessors();
+            if (startNodePredecessors.containsAll(endNodePredecessors)
+                    && endNodePredecessors.containsAll(startNodePredecessors)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Map<Edge, Predecessor> countSubsets() {
+        Map<Edge, Predecessor> edgePredecessorMap = new HashMap<>();
+        for (Edge uniqueEdge : edges) {
+            Predecessor predecessor = new Predecessor();
+            Node startNode = uniqueEdge.getStart();
+            Node endNode = uniqueEdge.getEnd();
+            for (Edge edge : edges) {
+                if (startNode.equals(edge.getEnd())) {
+                    predecessor.getStartNodePredecessors().add(edge.getStart().getName());
+                }
+                if (endNode.equals(edge.getEnd())) {
+                    predecessor.getEndNodePredecessors().add(edge.getStart().getName());
+                }
+            }
+            edgePredecessorMap.put(uniqueEdge, predecessor);
+        }
+        System.out.println("EDGE PREDECESSOR TABLE");
+        edgePredecessorMap.entrySet().forEach(System.out::println);
+        return edgePredecessorMap;
+    }
+
+
+    private void createGraph() {
+        graph = new Graph();
+        graph.setNodes(createNodes());
+        for (int i = 0; i < structure.length; i++) {
+            for (int j = 0; j < structure.length; j++) {
+                if ("1".equals(structure[i][j])) {
+                    Edge edge = new Edge(graph.getNodes().get(i), graph.getNodes().get(j));
+                    graph.getNodes().get(i).getConnections().add(edge);
+                }
+            }
+        }
         List<Node> nodes = graph.getNodes();
-        Set<Edge> uniqueEdges = new HashSet<>();
-        nodes.forEach(node -> uniqueEdges.addAll(node.getConnections()));
-        uniqueEdges.forEach(System.out::println);
+        edges = new HashSet<>();
+        nodes.forEach(node -> edges.addAll(node.getConnections()));
+//        edges.forEach(System.out::println);
+//        nodes.forEach(System.out::println);
+    }
+
+    private List<Node> createNodes() {
+        List<Node> nodes = new ArrayList<>();
+        for (int i = 1; i <= structure.length; i++) {
+            nodes.add(new Node(i, new ArrayList<>()));
+        }
+        return nodes;
     }
 
     private Map<Integer, Integer> countTestingElements() {
@@ -72,26 +126,4 @@ public class BGM {
         }
         return map;
     }
-
-    private List<Node> createNodes() {
-        List<Node> nodes = new ArrayList<>();
-        for (int i = 1; i <= structure.length; i++) {
-            nodes.add(new Node(i, new ArrayList<>()));
-        }
-        return nodes;
-    }
-
-    private Graph createGraph() {
-        graph.setNodes(createNodes());
-        for (int i = 0; i < structure.length; i++) {
-            for (int j = 0; j < structure.length; j++) {
-                if ("1".equals(structure[i][j])) {
-                    Edge edge = new Edge(graph.getNodes().get(i), graph.getNodes().get(j));
-                    graph.getNodes().get(i).getConnections().add(edge);
-                }
-            }
-        }
-        return graph;
-    }
-
 }
