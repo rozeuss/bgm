@@ -3,113 +3,109 @@ package bgm;
 import structure.Edge;
 import structure.Graph;
 import structure.Node;
-import structure.Predecessor;
+import structure.PrecedingElements;
 
 import java.util.*;
 
 public class BGM {
 
     private long cardinalityOfE; //liczebność zbioru
-    private String[][] structure;
+    private int[][] structure;
     private Graph graph;
     private long m;
-    private long min;
     private Set<Edge> edges;
+    private List<Node> nodes;
 
-    public BGM(String[][] structure) {
+    public BGM(int[][] structure) {
         this.cardinalityOfE = structure.length;
         this.structure = structure;
     }
 
-    public void diagnose() {
-        createGraph();
+    public void diagnose(int m) {
+        this.m = m;
         System.out.println("\nWARUNEK KONIECZNY");
         boolean necessaryCondition = checkNecessaryCondition();
-        System.out.println("CZY SPELNIONY? " + necessaryCondition + " (MOZE TRZEBA SPRAWDZIC CZY M > 0)\n");
-
+        System.out.println("CZY SPELNIONY? " + necessaryCondition + "\n");
+        createGraph();
         System.out.println("WARUNEK WYSTARCZAJACY");
         boolean sufficientCondition = checkSufficientCondition();
-        System.out.println("CZY SPELNIONY? " + sufficientCondition);
-        if (sufficientCondition) {
-            System.out.println("BGM: Struktura jest " + min + "-diagnozowalna");
+        System.out.println("CZY SPELNIONY? " + sufficientCondition + "\n");
+        if (necessaryCondition && sufficientCondition) {
+            System.out.println("BGM: Struktura jest " + this.m + "-diagnozowalna.");
         } else {
-            System.out.println("BGM: Struktura nie jest " + m + "-diagnozowalna");
+            System.out.println("BGM: Struktura nie jest " + this.m + "-diagnozowalna.");
         }
     }
 
     private boolean checkNecessaryCondition() {
-        System.out.println("m<=" + nDiagnosable());
-        System.out.println("Struktura jest co najwyzej " + m + "-diagnozowalna");
-        return checkSecondCondition();
+        boolean firstCondition = checkFirstCondition();
+        System.out.println("Neccesarry 1st: " + firstCondition);
+        boolean secondCondition = checkSecondCondition();
+        System.out.println("Neccesarry 2nd: " + secondCondition);
+        return firstCondition && secondCondition;
     }
 
-    private long nDiagnosable() {
-        m = cardinalityOfE - 2;
-        return cardinalityOfE - 2;
+    private boolean checkFirstCondition() {
+        System.out.println(cardinalityOfE + " >= " + " 2 + " + m);
+        return cardinalityOfE >= 2 + m;
     }
 
     private boolean checkSecondCondition() {
+        System.out.println("Liczba elementów opiniujących element powinna być większa lub równa "
+                + m + " aby struktura była " + m + "-diagnozowalna.");
         Map<Integer, Integer> nodeTestingElements = countTestingElements();
-        min = Collections.min(nodeTestingElements.values());
-        System.out.println("Liczba elementów opiniujących element powinna być co najmniej równa " + m);
         System.out.println(nodeTestingElements);
-        System.out.println("Struktura jest co najwyżej " + Collections.min(nodeTestingElements.values()) + "-diagnozowalna");
         return nodeTestingElements.values().stream().allMatch(integer -> integer >= m);
-//        return Collections.min(nodeTestingElements.values());
     }
 
-
     private boolean checkSufficientCondition() {
-        Map<Edge, Predecessor> edgePredecessorMap = countSubsets();
-        Collection<Predecessor> values = edgePredecessorMap.values();
-        for (Predecessor value : values) {
-            List<Integer> startNodePredecessors = value.getStartNodePredecessors();
-            List<Integer> endNodePredecessors = value.getEndNodePredecessors();
-            if (startNodePredecessors.containsAll(endNodePredecessors)
-                    && endNodePredecessors.containsAll(startNodePredecessors)) {
+        Map<Edge, PrecedingElements> edgePrecedingElementMap = getPrecedingElementsSubsets();
+        Collection<PrecedingElements> values = edgePrecedingElementMap.values();
+        for (PrecedingElements value : values) {
+            List<Integer> startNodePrecedingElements = value.getStartNodePrecedingElements();
+            List<Integer> endNodePrecedingElements = value.getEndNodePrecedingElements();
+            if (startNodePrecedingElements.containsAll(endNodePrecedingElements)
+                    && endNodePrecedingElements.containsAll(startNodePrecedingElements)) {
                 return false;
             }
         }
         return true;
     }
 
-    private Map<Edge, Predecessor> countSubsets() {
-        Map<Edge, Predecessor> edgePredecessorMap = new HashMap<>();
+    private Map<Edge, PrecedingElements> getPrecedingElementsSubsets() {
+        Map<Edge, PrecedingElements> edgePrecedingElementMap = new HashMap<>();
         for (Edge uniqueEdge : edges) {
-            Predecessor predecessor = new Predecessor();
+            PrecedingElements precedingElements = new PrecedingElements();
             Node startNode = uniqueEdge.getStart();
             Node endNode = uniqueEdge.getEnd();
             for (Edge edge : edges) {
                 if (startNode.equals(edge.getEnd())) {
-                    predecessor.getStartNodePredecessors().add(edge.getStart().getName());
+                    precedingElements.getStartNodePrecedingElements().add(edge.getStart().getName());
                 }
                 if (endNode.equals(edge.getEnd())) {
-                    predecessor.getEndNodePredecessors().add(edge.getStart().getName());
+                    precedingElements.getEndNodePrecedingElements().add(edge.getStart().getName());
                 }
             }
-            edgePredecessorMap.put(uniqueEdge, predecessor);
+            edgePrecedingElementMap.put(uniqueEdge, precedingElements);
         }
-        edgePredecessorMap.entrySet().forEach(System.out::println);
-        return edgePredecessorMap;
+        edgePrecedingElementMap.entrySet().forEach(System.out::println);
+        return edgePrecedingElementMap;
     }
-
 
     private void createGraph() {
         graph = new Graph();
         graph.setNodes(createNodes());
         for (int i = 0; i < structure.length; i++) {
             for (int j = 0; j < structure.length; j++) {
-                if ("1".equals(structure[i][j])) {
+                if (1 == structure[i][j]) {
                     Edge edge = new Edge(graph.getNodes().get(i), graph.getNodes().get(j));
                     graph.getNodes().get(i).getConnections().add(edge);
                 }
             }
         }
-        List<Node> nodes = graph.getNodes();
+        nodes = graph.getNodes();
         edges = new HashSet<>();
         nodes.forEach(node -> edges.addAll(node.getConnections()));
-//        edges.forEach(System.out::println);
-//        nodes.forEach(System.out::println);
     }
 
     private List<Node> createNodes() {
@@ -125,7 +121,7 @@ public class BGM {
         for (int i = 0; i < structure.length; i++) {
             int testingElements = 0;
             for (int j = 0; j < structure.length; ++j) {
-                if ("1".equals(structure[i][j])) {
+                if (1 == structure[i][j]) {
                     testingElements++;
                 }
             }

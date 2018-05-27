@@ -2,43 +2,44 @@ package utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class MatrixUtils {
 
-    private static final List<String> VALUES = Arrays.asList("0", "1", "x", "X");
+    private static final List<Integer> VALUES = Arrays.asList(0, 1);
 
     private MatrixUtils() {
     }
 
-    public static String[][] createMatrix(List<String> list) {
+    public static int[][] createMatrix(List<String> list) {
         int matrixSize = list.get(0).length();
-        String[][] matrix = new String[matrixSize][matrixSize];
+        int[][] matrix = new int[matrixSize][matrixSize];
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < matrixSize; j++) {
-                matrix[i][j] = Character.toString(list.get(i).charAt(j));
+                matrix[i][j] = Character.getNumericValue(list.get(i).charAt(j));
             }
         }
         return matrix;
     }
 
-    public static boolean validateInput(String[][] matrix) {
+    public static boolean validateInput(int[][] matrix) {
         return checkValues(matrix) && checkMajorDiagonal(matrix);
     }
 
-    private static boolean checkMajorDiagonal(String[][] matrix) {
+    private static boolean checkMajorDiagonal(int[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
-            if (!"X".equalsIgnoreCase(matrix[i][i])) {
-                return false;
+            if (0 != matrix[i][i]) {
+                throw new IllegalStateException("Major diagonal must be zeros.");
             }
         }
         return true;
     }
 
-    private static boolean checkValues(String[][] matrix) {
-        Stream<String[]> stringArrayStream = Arrays.stream(matrix);
-        Stream<String> stringStream = stringArrayStream.flatMap(Arrays::stream);
-        return stringStream.allMatch(VALUES::contains);
+    private static boolean checkValues(int[][] matrix) {
+        Stream<int[]> intArrayStream = Arrays.stream(matrix);
+        IntStream intStream = intArrayStream.flatMapToInt(Arrays::stream);
+        return intStream.allMatch(VALUES::contains);
     }
 
 }
