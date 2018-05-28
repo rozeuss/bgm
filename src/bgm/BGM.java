@@ -6,10 +6,10 @@ import java.util.*;
 
 public class BGM {
 
-    private long cardinalityOfE; //liczebność zbioru
-    private int[][] structure;
+    private long cardinalityOfE;
+    int[][] structure;
     private Graph graph;
-    private long m;
+    int m;
     private List<Pair> pairs;
 
     public BGM(int[][] structure, int m) {
@@ -35,7 +35,8 @@ public class BGM {
         return necessaryCondition && sufficientCondition;
     }
 
-    private boolean checkNecessaryCondition() {
+    public boolean checkNecessaryCondition() {
+        System.out.println("\nWARUNEK KONIECZNY");
         boolean firstCondition = checkFirstCondition();
         System.out.println("Neccesarry 1st: " + firstCondition);
         boolean secondCondition = checkSecondCondition();
@@ -56,7 +57,9 @@ public class BGM {
         return nodeTestingElements.values().stream().allMatch(integer -> integer >= m);
     }
 
-    private boolean checkSufficientCondition() {
+    public boolean checkSufficientCondition() {
+        System.out.println("WARUNEK WYSTARCZAJACY");
+        createGraph();
         Map<Pair, PrecedingElements> pairPrecedingElementsMap = getPrecedingElementsSubsets();
         Collection<PrecedingElements> values = pairPrecedingElementsMap.values();
         for (PrecedingElements value : values) {
@@ -64,9 +67,11 @@ public class BGM {
             List<Integer> endNodePrecedingElements = value.getEndNodePrecedingElements();
             if (startNodePrecedingElements.containsAll(endNodePrecedingElements)
                     && endNodePrecedingElements.containsAll(startNodePrecedingElements)) {
+                System.out.println("Sufficient: " + false);
                 return false;
             }
         }
+        System.out.println("Sufficient: " + true);
         return true;
     }
 
@@ -127,7 +132,7 @@ public class BGM {
         for (int i = 0; i < structure.length; i++) {
             int testingElements = 0;
             for (int j = 0; j < structure.length; ++j) {
-                if (1 == structure[i][j]) {
+                if (1 == structure[j][i]) {
                     testingElements++;
                 }
             }

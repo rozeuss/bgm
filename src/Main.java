@@ -1,41 +1,38 @@
+import bgm.Algorithm;
 import bgm.BGM;
+import utils.FileUtils;
 import utils.MatrixUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
-    //    input2 ze sprawka
-//    input3 przerobiony 2, nie przechodzi
-    static final String INPUT = "\\input2.txt"; //macierz przejsc
-    static final String OUTPUT = "\\output.txt";
-    static final String PATH = System.getProperty("user.dir");
-    static Scanner in = new Scanner(System.in);
+    private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) throws InterruptedException {
-        List<String> inputData = readInputFile();
+        List<String> inputData = FileUtils.readInputFile();
         int[][] matrix = createMatrix(inputData);
         if (MatrixUtils.validateInput(matrix)) {
 //            int m = getM();
 //            TODO ^
             int m = 1;
-            BGM bgm = new BGM(matrix, m);
-            while (!bgm.diagnose()) {
-//                            MatrixUtils.changeMatrix
-//                bgm.setStructure(new int[][]{
-//                        {0, 0, 1, 1},
-//                        {1, 0, 0, 1},
-//                        {0, 1, 0, 0},
-//                        {0, 0, 1, 0}});
-            }
+            Algorithm algorithm = new Algorithm(new BGM(matrix, m));
+            int[][] optimizedStructure = algorithm.optimizeStructure();
+            FileUtils.writeOutputFile(optimizedStructure);
+        } else {
+            throw new IllegalArgumentException("Invalid input data.\nAllowed symbols: [ 0 , 1 ].");
+        }
+    }
 
+    public static void workingBgmExample() {
+        List<String> inputData = FileUtils.readInputFile();
+        int[][] matrix = createMatrix(inputData);
+        if (MatrixUtils.validateInput(matrix)) {
+            int m = getM();
+            BGM bgm = new BGM(matrix, m);
+            bgm.diagnose();
         } else {
             throw new IllegalArgumentException("Invalid input data.\nAllowed symbols: [ 0 , 1 ].");
         }
@@ -52,15 +49,5 @@ public class Main {
         int[][] matrix = MatrixUtils.createMatrix(inputData);
         System.out.println("Matrix: " + Arrays.deepToString(matrix));
         return matrix;
-    }
-
-    private static List<String> readInputFile() {
-        List<String> inputData = null;
-        try (Stream<String> stream = Files.lines(Paths.get(PATH + INPUT))) {
-            inputData = stream.collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return inputData;
     }
 }

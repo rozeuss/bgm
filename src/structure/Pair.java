@@ -1,9 +1,8 @@
 package structure;
 
 public class Pair {
-
-    int first;
-    int second;
+    private int first;
+    private int second;
 
     public Pair() {
     }
