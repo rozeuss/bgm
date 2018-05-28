@@ -7,6 +7,11 @@ public class PrecedingElements {
     private List<Integer> startNodePrecedingElements = new ArrayList<>();
     private List<Integer> endNodePrecedingElements = new ArrayList<>();
 
+    public PrecedingElements(List<Integer> startNodePrecedingElements, List<Integer> endNodePrecedingElements) {
+        this.startNodePrecedingElements = startNodePrecedingElements;
+        this.endNodePrecedingElements = endNodePrecedingElements;
+    }
+
     public List<Integer> getStartNodePrecedingElements() {
         return startNodePrecedingElements;
     }
@@ -26,8 +31,8 @@ public class PrecedingElements {
     @Override
     public String toString() {
         return "PrecedingElements{" +
-                "start={" + startNodePrecedingElements +
-                "} | end={" + endNodePrecedingElements +
+                "first={" + startNodePrecedingElements +
+                "} | second={" + endNodePrecedingElements +
                 "}}";
     }
 }

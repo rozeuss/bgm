@@ -1,9 +1,6 @@
 package bgm;
 
-import structure.Edge;
-import structure.Graph;
-import structure.Node;
-import structure.PrecedingElements;
+import structure.*;
 
 import java.util.*;
 
@@ -13,16 +10,16 @@ public class BGM {
     private int[][] structure;
     private Graph graph;
     private long m;
-    private Set<Edge> edges;
-    private List<Node> nodes;
+    private List<Pair> pairs;
 
-    public BGM(int[][] structure) {
+    public BGM(int[][] structure, int m) {
+        this.m = m;
         this.cardinalityOfE = structure.length;
         this.structure = structure;
+        getPairs();
     }
 
-    public void diagnose(int m) {
-        this.m = m;
+    public boolean diagnose() {
         System.out.println("\nWARUNEK KONIECZNY");
         boolean necessaryCondition = checkNecessaryCondition();
         System.out.println("CZY SPELNIONY? " + necessaryCondition + "\n");
@@ -35,6 +32,7 @@ public class BGM {
         } else {
             System.out.println("BGM: Struktura nie jest " + this.m + "-diagnozowalna.");
         }
+        return necessaryCondition && sufficientCondition;
     }
 
     private boolean checkNecessaryCondition() {
@@ -59,8 +57,8 @@ public class BGM {
     }
 
     private boolean checkSufficientCondition() {
-        Map<Edge, PrecedingElements> edgePrecedingElementMap = getPrecedingElementsSubsets();
-        Collection<PrecedingElements> values = edgePrecedingElementMap.values();
+        Map<Pair, PrecedingElements> pairPrecedingElementsMap = getPrecedingElementsSubsets();
+        Collection<PrecedingElements> values = pairPrecedingElementsMap.values();
         for (PrecedingElements value : values) {
             List<Integer> startNodePrecedingElements = value.getStartNodePrecedingElements();
             List<Integer> endNodePrecedingElements = value.getEndNodePrecedingElements();
@@ -72,24 +70,26 @@ public class BGM {
         return true;
     }
 
-    private Map<Edge, PrecedingElements> getPrecedingElementsSubsets() {
-        Map<Edge, PrecedingElements> edgePrecedingElementMap = new HashMap<>();
-        for (Edge uniqueEdge : edges) {
-            PrecedingElements precedingElements = new PrecedingElements();
-            Node startNode = uniqueEdge.getStart();
-            Node endNode = uniqueEdge.getEnd();
-            for (Edge edge : edges) {
-                if (startNode.equals(edge.getEnd())) {
-                    precedingElements.getStartNodePrecedingElements().add(edge.getStart().getName());
+    private Map<Pair, PrecedingElements> getPrecedingElementsSubsets() {
+        Map<Pair, PrecedingElements> pairPrecedingElementsMap = new HashMap<>();
+        for (Pair pair : pairs) {
+            List<Integer> firstNodePrecedingElements = new ArrayList<>();
+            List<Integer> secondNodePrecedingElements = new ArrayList<>();
+            for (Edge edges : graph.getEdges()) {
+                Node start = edges.getStart();
+                Node end = edges.getEnd();
+                if (pair.getFirst() == end.getName()) {
+                    firstNodePrecedingElements.add(start.getName());
                 }
-                if (endNode.equals(edge.getEnd())) {
-                    precedingElements.getEndNodePrecedingElements().add(edge.getStart().getName());
+                if (pair.getSecond() == end.getName()) {
+                    secondNodePrecedingElements.add(start.getName());
                 }
             }
-            edgePrecedingElementMap.put(uniqueEdge, precedingElements);
+            pairPrecedingElementsMap.put(pair,
+                    new PrecedingElements(firstNodePrecedingElements, secondNodePrecedingElements));
         }
-        edgePrecedingElementMap.entrySet().forEach(System.out::println);
-        return edgePrecedingElementMap;
+        pairPrecedingElementsMap.entrySet().forEach(System.out::println);
+        return pairPrecedingElementsMap;
     }
 
     private void createGraph() {
@@ -103,9 +103,15 @@ public class BGM {
                 }
             }
         }
-        nodes = graph.getNodes();
-        edges = new HashSet<>();
-        nodes.forEach(node -> edges.addAll(node.getConnections()));
+        graph.getNodes().forEach(node -> graph.getEdges().addAll(node.getConnections()));
+    }
+
+    private void getPairs() {
+        pairs = new ArrayList<>();
+        for (int i = 0; i < structure.length; i++)
+            for (int j = i + 1; j < structure.length; j++) {
+                pairs.add(new Pair(i + 1, j + 1));
+            }
     }
 
     private List<Node> createNodes() {
@@ -128,5 +134,13 @@ public class BGM {
             map.put(i + 1, testingElements);
         }
         return map;
+    }
+
+    public int[][] getStructure() {
+        return structure;
+    }
+
+    public void setStructure(int[][] structure) {
+        this.structure = structure;
     }
 }

@@ -12,19 +12,30 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    static final String INPUT = "\\input3.txt"; //macierz przejsc
+    //    input2 ze sprawka
+//    input3 przerobiony 2, nie przechodzi
+    static final String INPUT = "\\input2.txt"; //macierz przejsc
     static final String OUTPUT = "\\output.txt";
     static final String PATH = System.getProperty("user.dir");
     static Scanner in = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         List<String> inputData = readInputFile();
         int[][] matrix = createMatrix(inputData);
         if (MatrixUtils.validateInput(matrix)) {
 //            int m = getM();
+//            TODO ^
             int m = 1;
-            BGM bgm = new BGM(matrix);
-            bgm.diagnose(m);
+            BGM bgm = new BGM(matrix, m);
+            while (!bgm.diagnose()) {
+//                            MatrixUtils.changeMatrix
+//                bgm.setStructure(new int[][]{
+//                        {0, 0, 1, 1},
+//                        {1, 0, 0, 1},
+//                        {0, 1, 0, 0},
+//                        {0, 0, 1, 0}});
+            }
+
         } else {
             throw new IllegalArgumentException("Invalid input data.\nAllowed symbols: [ 0 , 1 ].");
         }
