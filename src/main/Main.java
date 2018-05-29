@@ -1,3 +1,5 @@
+package main;
+
 import bgm.Algorithm;
 import bgm.BGM;
 import utils.FileUtils;
@@ -11,7 +13,7 @@ public class Main {
 
     private static Scanner in = new Scanner(System.in);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         List<String> inputData = FileUtils.readInputFile();
         int[][] matrix = createMatrix(inputData);
         if (MatrixUtils.validateInput(matrix)) {
