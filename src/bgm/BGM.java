@@ -7,23 +7,23 @@ import java.util.*;
 public class BGM {
 
     private long cardinalityOfE;
-    int[][] structure;
     private Graph graph;
-    int m;
     private List<Pair> pairs;
+    int[][] structure;
+    int m;
 
     public BGM(int[][] structure, int m) {
         this.m = m;
         this.cardinalityOfE = structure.length;
         this.structure = structure;
         getPairs();
+        createGraph();
     }
 
     public boolean diagnose() {
         System.out.println("\nWARUNEK KONIECZNY");
         boolean necessaryCondition = checkNecessaryCondition();
         System.out.println("CZY SPELNIONY? " + necessaryCondition + "\n");
-        createGraph();
         System.out.println("WARUNEK WYSTARCZAJACY");
         boolean sufficientCondition = checkSufficientCondition();
         System.out.println("CZY SPELNIONY? " + sufficientCondition + "\n");
@@ -59,7 +59,6 @@ public class BGM {
 
     public boolean checkSufficientCondition() {
         System.out.println("WARUNEK WYSTARCZAJACY");
-        createGraph();
         Map<Pair, PrecedingElements> pairPrecedingElementsMap = getPrecedingElementsSubsets();
         Collection<PrecedingElements> values = pairPrecedingElementsMap.values();
         for (PrecedingElements value : values) {

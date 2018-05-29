@@ -10,8 +10,6 @@ import java.util.stream.Stream;
 
 public class FileUtils {
 
-    //    input2 ze sprawka
-    //    input3 przerobiony 2, nie przechodzi
     private static final int NUMBER = 1;
     private static final String INPUT = "input" + NUMBER + ".txt";
     private static final String OUTPUT = "output" + NUMBER + ".txt";
@@ -35,8 +33,8 @@ public class FileUtils {
         StringBuilder line;
         for (int[] outputRow : output) {
             line = new StringBuilder();
-            for (int j = 0; j < output.length; j++) {
-                line.append(outputRow[j]);
+            for (int i = 0; i < output.length; i++) {
+                line.append(outputRow[i]);
             }
             lines.add(line.toString());
         }

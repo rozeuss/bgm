@@ -17,9 +17,7 @@ public class Main {
         List<String> inputData = FileUtils.readInputFile();
         int[][] matrix = createMatrix(inputData);
         if (MatrixUtils.validateInput(matrix)) {
-//            int m = getM();
-//            TODO ^
-            int m = 1;
+            int m = getM();
             Algorithm algorithm = new Algorithm(new BGM(matrix, m));
             int[][] optimizedStructure = algorithm.optimizeStructure();
             FileUtils.writeOutputFile(optimizedStructure);
