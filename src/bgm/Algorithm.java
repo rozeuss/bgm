@@ -12,23 +12,21 @@ public class Algorithm {
             int columnToOptimize = findColumnToOptimize();
             while (columnToOptimize != -1) {
                 int row = 0;
-                int outDegree = 0;
+                int tmpOutDegree = 0;
                 for (int i = 0; i < bgm.structure.length; i++) {
-                    if ((bgm.structure[i][columnToOptimize] == 1) && (getOutDegree(i) > outDegree)) {
+                    if ((bgm.structure[i][columnToOptimize] == 1) && (getOutDegree(i) > tmpOutDegree)) {
                         row = i;
-                        outDegree = getOutDegree(i);
+                        tmpOutDegree = getOutDegree(i);
                     }
                 }
                 bgm.structure[row][columnToOptimize] = 0;
                 columnToOptimize = findColumnToOptimize();
             }
-//            TODO warunek ponizej chyba niepotrzebny?
-//            if (!((bgm.checkNecessaryCondition()) && (bgm.checkSufficientCondition()))) {
-//                structure = bgm.structure;
-//            }
         } else {
             throw new IllegalStateException("Cannot optimize structure - failed conditions.");
         }
+        boolean hasFulfilledConditions = bgm.checkNecessaryCondition() && bgm.checkSufficientCondition();
+        System.out.println("Czy wyznaczona struktura jest " + bgm.m + "-diagnozowalna? " + hasFulfilledConditions);
         return bgm.structure;
     }
 

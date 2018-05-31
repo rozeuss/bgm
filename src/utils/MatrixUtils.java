@@ -23,21 +23,6 @@ public class MatrixUtils {
         return matrix;
     }
 
-    public static int[] getColumn(int[][] array, int index) {
-        int[] column = new int[array[0].length];
-        for (int i = 0; i < column.length; i++) {
-            column[i] = array[i][index];
-        }
-        return column;
-    }
-
-    public static int[][] setColumn(int[][] array, int index, int[] column) {
-        for (int i = 0; i < column.length; i++) {
-            array[i][index] = column[i];
-        }
-        return array;
-    }
-
     public static boolean validateInput(int[][] matrix) {
         return checkValues(matrix) && checkMajorDiagonal(matrix);
     }
@@ -56,5 +41,4 @@ public class MatrixUtils {
         }
         return true;
     }
-
 }

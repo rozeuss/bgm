@@ -74,6 +74,39 @@ public class BGM {
         return true;
     }
 
+
+//    private Map<Edge, PrecedingElements> getPrecedingElementsSubsets() {
+//        Map<Edge, PrecedingElements> edgePrecedingElementMap = new HashMap<>();
+//        for (Edge uniqueEdge : graph.getEdges()) {
+//            PrecedingElements precedingElements = new PrecedingElements();
+//            Node startNode = uniqueEdge.getStart();
+//            Node endNode = uniqueEdge.getEnd();
+//            for (Edge edge : graph.getEdges()) {
+//                if (startNode.equals(edge.getEnd())) {
+//                    precedingElements.getStartNodePrecedingElements().add(edge.getStart().getName());
+//                }
+//                if (endNode.equals(edge.getEnd())) {
+//                    precedingElements.getEndNodePrecedingElements().add(edge.getStart().getName());
+//                }
+//            }
+////            precedingElements.getEndNodePrecedingElements()
+////                    .removeAll(List.of(uniqueEdge.getStart().getName()));
+////            precedingElements.getStartNodePrecedingElements()
+////                    .removeAll(List.of(uniqueEdge.getEnd().getName()));
+////            if (precedingElements.getStartNodePrecedingElements().contains(uniqueEdge.getEnd().getName()) &&
+////                    precedingElements.getEndNodePrecedingElements().contains(uniqueEdge.getStart().getName())) {
+////                            precedingElements.getEndNodePrecedingElements()
+////                    .removeAll(List.of(uniqueEdge.getStart().getName()));
+////                            precedingElements.getStartNodePrecedingElements()
+////                    .removeAll(List.of(uniqueEdge.getEnd().getName()));
+////            }
+//
+//            edgePrecedingElementMap.put(uniqueEdge, precedingElements);
+//        }
+//        edgePrecedingElementMap.entrySet().forEach(System.out::println);
+//        return edgePrecedingElementMap;
+//    }
+
     private Map<Pair, PrecedingElements> getPrecedingElementsSubsets() {
         Map<Pair, PrecedingElements> pairPrecedingElementsMap = new HashMap<>();
         for (Pair pair : pairs) {
@@ -89,6 +122,29 @@ public class BGM {
                     secondNodePrecedingElements.add(start.getName());
                 }
             }
+            firstNodePrecedingElements.removeAll(List.of(pair.getSecond(), pair.getFirst()));
+            secondNodePrecedingElements.removeAll(List.of(pair.getSecond(), pair.getFirst()));
+
+            for (Integer firstNodePrecedingElement : firstNodePrecedingElements) {
+                List<Integer> first = new ArrayList<>();
+                List<Integer> second = new ArrayList<>();
+                for (Edge edges : graph.getEdges()) {
+                    Node start = edges.getStart();
+                    Node end = edges.getEnd();
+                    if (pair.getFirst() == end.getName()) {
+                        firstNodePrecedingElements.add(start.getName());
+                    }
+                    if (pair.getSecond() == end.getName()) {
+                        secondNodePrecedingElements.add(start.getName());
+                    }
+                }
+
+            }
+            for (Integer secondNodePrecedingElement : secondNodePrecedingElements) {
+
+            }
+
+
             pairPrecedingElementsMap.put(pair,
                     new PrecedingElements(firstNodePrecedingElements, secondNodePrecedingElements));
         }

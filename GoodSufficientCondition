@@ -1,0 +1,35 @@
+    my ($Pre, $Suc) = ( { }, { } );
+    my $cmb = variations( \@vertices, 2 );
+    while(my $cols = $cmb->next){
+        # zbieramy poprzedniki i nastepniki wezla e'
+        $Pre->{$cols->[0]} ||= $self->get_predecessors ($matrix, $cols->[0]);
+        $Suc->{$cols->[0]} ||= $self->get_successors ($matrix, $cols->[0]);
+        # dla ulatwienia; po przetestowaniu mozna wykluczyc wykorzystanie
+        # ponizszych zmiennych pomocniczych
+        my $pre = $Pre->{$cols->[0]};
+        my $suc = $Suc->{$cols->[0]};
+
+        # badamy tylko krawedzie
+        next unless $pre->{$cols->[1]} and $suc->{$cols->[1]};
+
+        # zbieramy poprzedniki e''
+        $Pre->{$cols->[1]} ||= $self->get_predecessors ($matrix, $cols->[1]);
+        # dla ulatwienia, po przetestowaniu mozna wykluczyc wykorzystanie
+        # ponizszej zmiennej pomocniczej
+        my $pre1 = $Pre->{$cols->[1]};
+
+        # zbieramy NIEpowtarzajace sie poprzedniki wezla e'
+        my @selected;
+        foreach my $key ( keys %$pre ){
+            next if $pre1->{$key};
+            push @selected, $key;
+        }
+
+        my $w = 0;
+        # sprawdzamy wezel e'
+        foreach my $col ( @selected ){
+            $Pre->{$col} ||= $self->get_predecessors($matrix, $col);
+            $w++ unless compare( $pre1, $Pre->{$col} );
+        }
+        $weight -= $M * $w;
+    }

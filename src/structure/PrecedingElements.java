@@ -12,6 +12,10 @@ public class PrecedingElements {
         this.endNodePrecedingElements = endNodePrecedingElements;
     }
 
+    public PrecedingElements() {
+
+    }
+
     public List<Integer> getStartNodePrecedingElements() {
         return startNodePrecedingElements;
     }
