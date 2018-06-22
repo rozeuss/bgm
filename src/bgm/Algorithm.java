@@ -8,7 +8,8 @@ public class Algorithm {
     }
 
     public int[][] optimizeStructure() {
-        if (bgm.checkNecessaryCondition() && bgm.checkSufficientCondition()) {
+//        if (bgm.checkNecessaryCondition() && bgm.checkSufficientCondition()) {
+        if (bgm.checkNecessaryCondition() && bgm.sufficientCondition()) {
             int columnToOptimize = findColumnToOptimize();
             while (columnToOptimize != -1) {
                 int row = 0;
@@ -25,7 +26,8 @@ public class Algorithm {
         } else {
             throw new IllegalStateException("Cannot optimize structure - failed conditions.");
         }
-        boolean hasFulfilledConditions = bgm.checkNecessaryCondition() && bgm.checkSufficientCondition();
+//        boolean hasFulfilledConditions = bgm.checkNecessaryCondition() && bgm.checkSufficientCondition();
+        boolean hasFulfilledConditions = bgm.checkNecessaryCondition() && bgm.sufficientCondition();
         System.out.println("Czy wyznaczona struktura jest " + bgm.m + "-diagnozowalna? " + hasFulfilledConditions);
         return bgm.structure;
     }

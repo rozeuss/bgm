@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 public class FileUtils {
 
-    private static final int NUMBER = 1;
+    private static final int NUMBER = 3;
     private static final String INPUT = "input" + NUMBER + ".txt";
     private static final String OUTPUT = "output" + NUMBER + ".txt";
     private static final String PATH = System.getProperty("user.dir");
